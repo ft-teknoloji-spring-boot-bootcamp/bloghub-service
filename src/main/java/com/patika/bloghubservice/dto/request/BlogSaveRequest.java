@@ -13,4 +13,5 @@ public class BlogSaveRequest {
 
     private String title;
     private String text;
+    private String email;
 }

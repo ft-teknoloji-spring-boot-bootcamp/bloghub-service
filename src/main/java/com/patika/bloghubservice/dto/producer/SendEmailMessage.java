@@ -1,6 +1,6 @@
 package com.patika.bloghubservice.dto.producer;
 
-import com.patika.bloghubservice.client.email.dto.request.enums.EmailTemplate;
+import com.patika.bloghubservice.dto.producer.enums.EmailTemplate;
 import lombok.*;
 
 @Getter

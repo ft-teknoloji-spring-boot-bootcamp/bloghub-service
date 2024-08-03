@@ -18,9 +18,9 @@ public class BlogController {
 
     private final BlogService blogService;
 
-    @PostMapping("/users/{email}")
-    public GenericResponse<BlogResponse> createBlog(@RequestBody BlogSaveRequest request, @PathVariable String email) {
-        return GenericResponse.success(blogService.createBlog(email, request), HttpStatus.CREATED);
+    @PostMapping()
+    public GenericResponse<BlogResponse> createBlog(@RequestBody BlogSaveRequest request) {
+        return GenericResponse.success(blogService.createBlog(request), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -38,10 +38,10 @@ public class BlogController {
         blogService.addComment(title, email, comment);
     }
 
-    @PutMapping("/{title}/users/{email}/like-count")
-    public void likeBlog(@PathVariable String title, @PathVariable String email) {
+    @PutMapping("/{id}/users/{email}/like-count")
+    public void likeBlog(@PathVariable Long id, @PathVariable String email) {
         //bir kullanıcı sadece maksimum 50 kere beğenebilir
-        blogService.likeBlog(title, email);
+        blogService.likeBlog(id, email);
     }
 
     @GetMapping("/{title}/like-count")

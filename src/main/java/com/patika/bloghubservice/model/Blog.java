@@ -1,95 +1,47 @@
 package com.patika.bloghubservice.model;
 
+import com.patika.bloghubservice.model.constant.BlogEntityConstants;
 import com.patika.bloghubservice.model.enums.BlogStatus;
+import jakarta.persistence.*;
+import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@Entity
+@Table(name = "blog")
 public class Blog {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = BlogEntityConstants.TITLE, nullable = false)
     private String title;
+
+    @Column(name = BlogEntityConstants.CONTENT)
     private String text;
+
+    @Column(name = BlogEntityConstants.CREATED_DATE)
     private LocalDateTime createdDate;
-    private User user;
+
+    @Column(name = BlogEntityConstants.USER_ID)
+    private Long userId;
+
+    @Enumerated(EnumType.STRING)
     private BlogStatus blogStatus;
+
+    @Column(name = BlogEntityConstants.LIKE_COUNT)
     private Long likeCount;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogComment> blogCommentList = new ArrayList<>();
 
-    public Blog(String title, String text, User user) {
-        this.title = title;
-        this.text = text;
-        this.user = user;
-        this.createdDate = LocalDateTime.now();
-        this.blogStatus = BlogStatus.DRAFT;
-        this.likeCount = 0L;
-    }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public BlogStatus getBlogStatus() {
-        return blogStatus;
-    }
-
-    public void setBlogStatus(BlogStatus blogStatus) {
-        this.blogStatus = blogStatus;
-    }
-
-    public Long getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(Long likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public List<BlogComment> getBlogCommentList() {
-        return blogCommentList;
-    }
-
-    public void setBlogCommentList(List<BlogComment> blogCommentList) {
-        this.blogCommentList = blogCommentList;
-    }
-
-    @Override
-    public String toString() {
-        return "Blog{" +
-                "title='" + title + '\'' +
-                ", text='" + text + '\'' +
-                ", createdDate=" + createdDate +
-                ", user=" + user +
-                ", blogStatus=" + blogStatus +
-                '}';
-    }
 }
