@@ -4,7 +4,9 @@ import com.patika.bloghubservice.client.user.dto.response.UserResponse;
 import com.patika.bloghubservice.client.user.service.UserClientService;
 import com.patika.bloghubservice.converter.BlogConverter;
 import com.patika.bloghubservice.dto.request.BlogSaveRequest;
+import com.patika.bloghubservice.dto.request.BlogSearchRequest;
 import com.patika.bloghubservice.dto.response.BlogResponse;
+import com.patika.bloghubservice.dto.response.BlogSearchResponse;
 import com.patika.bloghubservice.exception.BlogHubException;
 import com.patika.bloghubservice.exception.ExceptionMessages;
 import com.patika.bloghubservice.model.Blog;
@@ -13,7 +15,11 @@ import com.patika.bloghubservice.model.enums.BlogCommentType;
 import com.patika.bloghubservice.model.enums.BlogStatus;
 import com.patika.bloghubservice.producer.KafkaProducer;
 import com.patika.bloghubservice.repository.BlogRepository;
+import com.patika.bloghubservice.repository.specification.BlogSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -114,8 +120,14 @@ public class BlogService {
 
     }
 
-    public List<Blog> getAll() {
-        return blogRepository.findAll();
+    public BlogSearchResponse getAll(BlogSearchRequest request) {
+
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize(),
+                Sort.by(Sort.Direction.DESC, "likeCount")); //ödev bu parametreler kullanıcıdan alınacak şekle çevirin
+
+        Page<Blog> blogs = blogRepository.findAll(BlogSpecification.initSpecification(request), pageRequest);
+
+        return BlogConverter.toResponse(blogs);
     }
 
     public void likeBlog(Long id, String email) {

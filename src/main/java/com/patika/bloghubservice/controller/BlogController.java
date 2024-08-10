@@ -1,7 +1,9 @@
 package com.patika.bloghubservice.controller;
 
 import com.patika.bloghubservice.dto.request.BlogSaveRequest;
+import com.patika.bloghubservice.dto.request.BlogSearchRequest;
 import com.patika.bloghubservice.dto.response.BlogResponse;
+import com.patika.bloghubservice.dto.response.BlogSearchResponse;
 import com.patika.bloghubservice.dto.response.GenericResponse;
 import com.patika.bloghubservice.model.Blog;
 import com.patika.bloghubservice.service.BlogService;
@@ -24,8 +26,8 @@ public class BlogController {
     }
 
     @GetMapping
-    public GenericResponse<List<Blog>> getAllBlogs() {
-        return GenericResponse.success(blogService.getAll(), HttpStatus.OK);
+    public GenericResponse<BlogSearchResponse> getAllBlogs(@RequestBody BlogSearchRequest request) {
+        return GenericResponse.success(blogService.getAll(request), HttpStatus.OK);
     }
 
     @GetMapping("/{title}")
