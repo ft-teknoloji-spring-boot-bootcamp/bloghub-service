@@ -11,6 +11,7 @@ import com.patika.bloghubservice.model.Blog;
 import com.patika.bloghubservice.model.BlogComment;
 import com.patika.bloghubservice.model.enums.BlogCommentType;
 import com.patika.bloghubservice.model.enums.BlogStatus;
+import com.patika.bloghubservice.producer.KafkaProducer;
 import com.patika.bloghubservice.repository.BlogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,9 @@ public class BlogService {
 
     private final UserClientService userClientService;
 
-    public BlogResponse createBlog(BlogSaveRequest request) {
+    private final KafkaProducer kafkaProducer;
 
-        //ödev: kullanıcı blog yayınlamak için approved bir statuye sahip olmalı
+    public BlogResponse createBlog(BlogSaveRequest request) {
 
         UserResponse foundUser = userClientService.getUserByEmail(request.getEmail());
 
@@ -40,6 +41,8 @@ public class BlogService {
         Blog blog = prepareBlog(request, foundUser);
 
         blogRepository.save(blog);
+
+        kafkaProducer.sendBlog(blog);
 
         return BlogConverter.toResponse(blog);
     }
