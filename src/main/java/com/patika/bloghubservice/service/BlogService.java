@@ -17,6 +17,9 @@ import com.patika.bloghubservice.producer.KafkaProducer;
 import com.patika.bloghubservice.repository.BlogRepository;
 import com.patika.bloghubservice.repository.specification.BlogSpecification;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,6 +31,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BlogService {
 
     private final BlogRepository blogRepository;
@@ -36,6 +40,7 @@ public class BlogService {
 
     private final KafkaProducer kafkaProducer;
 
+    @CacheEvict(cacheNames = "blogs", allEntries = true)
     public BlogResponse createBlog(BlogSaveRequest request) {
 
         UserResponse foundUser = userClientService.getUserByEmail(request.getEmail());
@@ -120,13 +125,14 @@ public class BlogService {
 
     }
 
+    @Cacheable(value = "blogs", cacheNames = "blogs")
     public BlogSearchResponse getAll(BlogSearchRequest request) {
 
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize(),
                 Sort.by(Sort.Direction.DESC, "likeCount")); //ödev bu parametreler kullanıcıdan alınacak şekle çevirin
 
         Page<Blog> blogs = blogRepository.findAll(BlogSpecification.initSpecification(request), pageRequest);
-
+        log.info("blog'lar db'den getirildi.");
         return BlogConverter.toResponse(blogs);
     }
 

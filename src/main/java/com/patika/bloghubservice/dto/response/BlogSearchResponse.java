@@ -3,6 +3,7 @@ package com.patika.bloghubservice.dto.response;
 import com.patika.bloghubservice.model.enums.BlogStatus;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BlogSearchResponse {
+public class BlogSearchResponse implements Serializable {
 
     private List<BlogResponse> blogResponses;
     private int totalPage;
