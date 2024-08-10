@@ -24,7 +24,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +44,8 @@ public class BlogService {
     private final KafkaProducer kafkaProducer;
 
     @CacheEvict(cacheNames = "blogs", allEntries = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackForClassName = {"BlogHubException.class"}
+            , rollbackFor = SQLException.class)
     public BlogResponse createBlog(BlogSaveRequest request) {
 
         UserResponse foundUser = userClientService.getUserByEmail(request.getEmail());
@@ -126,6 +131,7 @@ public class BlogService {
     }
 
     @Cacheable(value = "blogs", cacheNames = "blogs")
+    @Transactional(readOnly = true)
     public BlogSearchResponse getAll(BlogSearchRequest request) {
 
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize(),
