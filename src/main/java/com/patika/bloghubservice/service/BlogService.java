@@ -68,7 +68,7 @@ public class BlogService {
 
         blog.setText(request.getText());
         blog.setTitle(request.getTitle());
-        blog.setUserId(userResponse.getUserId());
+        blog.setUserId(1L);
         blog.setCreatedDate(LocalDateTime.now());
         blog.setBlogStatus(BlogStatus.DRAFT);
         blog.setLikeCount(0L);
@@ -142,7 +142,7 @@ public class BlogService {
         return BlogConverter.toResponse(blogs);
     }
 
-    public void likeBlog(Long id, String email) {
+    public void likeBlog(Long id) {
         Optional<Blog> optionalBlog = blogRepository.findById(id);
 
         if (optionalBlog.isEmpty()) {

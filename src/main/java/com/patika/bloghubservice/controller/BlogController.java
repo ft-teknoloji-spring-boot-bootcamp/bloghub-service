@@ -40,10 +40,10 @@ public class BlogController {
         blogService.addComment(title, email, comment);
     }
 
-    @PutMapping("/{id}/users/{email}/like-count")
-    public void likeBlog(@PathVariable Long id, @PathVariable String email) {
+    @PutMapping("/{id}/like-count")
+    public void likeBlog(@PathVariable Long id) {
         //bir kullanıcı sadece maksimum 50 kere beğenebilir
-        blogService.likeBlog(id, email);
+        blogService.likeBlog(id);
     }
 
     @GetMapping("/{title}/like-count")
